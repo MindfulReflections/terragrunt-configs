@@ -1,0 +1,38 @@
+# Terraform / Terragrunt
+.terraform/
+.terragrunt-cache/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+*.backup
+*.log
+
+# Local environment files
+.env
+.env.*
+
+# IDE/Editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python virtualenvs (если используешь скрипты)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# MacOS / system
+.DS_Store
+Thumbs.db
+
+# Misc
+*.zip
+*.bak
+*.tmp
