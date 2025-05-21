@@ -1,0 +1,42 @@
+.
+├── common_vars
+├── dev
+│   ├── aws
+│   │   ├── computing
+│   │   ├── databases
+│   │   └── networking
+│   │       ├── security-groups
+│   │       │   └── terragrunt.hcl
+│   │       └── vpc
+│   │           └── terragrunt.hcl
+│   ├── env.hcl
+│   └── k8s
+├── prod
+│   ├── aws
+│   │   ├── computing
+│   │   │   ├── 01-prefect
+│   │   │   │   └── terragrunt.hcl
+│   │   │   └── 02-test
+│   │   ├── databases
+│   │   └── networking
+│   │       ├── security-groups
+│   │       │   └── terragrunt.hcl
+│   │       └── vpc
+│   │           └── terragrunt.hcl
+│   └── env.hcl
+├── terraform-modules
+│   ├── aws
+│   │   ├── ec2
+│   │   │   ├── main.tf
+│   │   │   └── variables.tf
+│   │   └── vpc
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   └── simple-test
+│       ├── main.tf
+│       └── variables.tf
+├── terragrunt.hcl
+└── tree.txt
+
+24 directories, 16 files
