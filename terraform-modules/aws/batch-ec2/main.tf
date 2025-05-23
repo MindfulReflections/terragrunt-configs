@@ -5,6 +5,13 @@ data "aws_subnet" "selected" {
 }
 
 locals {
+  # Render user-data из шаблона, подставляя ssh_public_keys
+  user_data = templatefile(
+    "${path.module}/templates/user_data.tpl", {
+      ssh_keys = var.ssh_public_keys
+    }
+  )
+
   # Stable ordering of instance keys
   sorted_instance_keys = sort(keys(var.instances))
 
@@ -46,6 +53,7 @@ locals {
   # - if extra_ebs_volumes is set on the instance, use that
   # - else if the global var.ebs_block_device is set, wrap it in a list
   # - otherwise, yield an empty list
+
   instance_volumes = {
     for name, cfg in var.instances : name => (
       cfg.extra_ebs_volumes != null ?
@@ -70,16 +78,16 @@ module "ec2" {
   instance_type = var.instance_type
 
   # Networking configuration
-  subnet_id                   = local.instance_placement[each.key].subnet_id
-  availability_zone           = local.instance_placement[each.key].availability_zone
-  vpc_security_group_ids      = var.common_security_group_ids
+  subnet_id              = local.instance_placement[each.key].subnet_id
+  availability_zone      = local.instance_placement[each.key].availability_zone
+  vpc_security_group_ids = var.common_security_group_ids
 
 
   associate_public_ip_address = (
-  contains(keys(each.value), "associate_public_ip_address") ?
-  each.value.associate_public_ip_address :
-  null
-)
+    contains(keys(each.value), "associate_public_ip_address") ?
+    each.value.associate_public_ip_address :
+    null
+  )
 
   # Spot instance settings
   create_spot_instance                = var.create_spot_instance
@@ -99,8 +107,11 @@ module "ec2" {
   ]
 
   # SSH key name (supports per-instance override) and user data
-  key_name  = try(each.value.ssh_key_name, var.ssh_key_name)
-  user_data = var.user_data
+  # key_name  = try(each.value.ssh_key_name, var.ssh_key_name)
+
+  # user_data = var.user_data
+  user_data = local.user_data
+
 }
 
 resource "aws_eip" "this" {

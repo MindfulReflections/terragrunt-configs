@@ -76,3 +76,9 @@ variable "private_subnet_suffix" {
   description = "Suffix for private subnets (e.g. 'private' → name-private-1, name-private-2)"
   default     = "private"
 }
+
+variable "map_public_ip_on_launch" {
+  description = "Whether to enable auto-assign public IP on public subnets"
+  type        = bool
+  default     = true
+}

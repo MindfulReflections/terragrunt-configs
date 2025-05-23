@@ -53,7 +53,7 @@ inputs = {
           from_port   = "22"
           to_port     = "22"
           protocol    = "tcp"
-          cidr_blocks = ["192.168.100.0/24", "10.8.8.0/24"]
+          cidr_blocks = ["192.168.100.0/24", "10.8.8.0/24", "94.43.14.179/32"]
         }
       ]
       egress = [

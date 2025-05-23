@@ -111,3 +111,9 @@ variable "ami_ssm_parameter" {
   type        = string
   default     = ""
 }
+
+variable "ssh_public_keys" {
+  description = "List of SSH public keys to install on each instance"
+  type        = list(string)
+  default     = []
+}

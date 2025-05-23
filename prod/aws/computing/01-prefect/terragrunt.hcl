@@ -22,6 +22,14 @@ dependency "security-groups-base" {
 locals {
   env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
 
+  ssh_dir       = "${get_terragrunt_dir()}/keys"
+  ssh_key_files = fileset(local.ssh_dir, "*.pub")
+
+  ssh_pub_keys = [
+    for f in local.ssh_key_files :
+    file("${local.ssh_dir}/${f}")
+  ]
+
   # Common tags for all resources
   tags = merge(
     include.general.locals.env.tags,
@@ -36,17 +44,17 @@ inputs = {
   subnets       = dependency.vpc.outputs.public_subnets
   instance_type = "t2.micro"
 
-
-
   common_security_group_ids = [
     dependency.security-groups-base.outputs.security_group_ids["ssh"],
     dependency.security-groups-base.outputs.security_group_ids["internal"]
   ]
-  root_block_device = [ {
+  root_block_device = [{
     volume_size = 8
   }]
-  ssh_key_name = include.general.locals.env.ssh_keys[0] # pick your default SSH key
-  tags         = local.tags
+  # ssh_key_name = include.general.locals.env.ssh_keys[0] # pick your default SSH key
+  ssh_public_keys = local.ssh_pub_keys
+
+  tags = local.tags
 
   instances = {
     one = {

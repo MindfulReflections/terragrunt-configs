@@ -1,4 +1,4 @@
-# AWS VPC Terraform Module
+# Terraform Module: VPC
 
 This Terraform module provisions an AWS Virtual Private Cloud (VPC) with both public and private subnets across specified Availability Zones (AZs). It leverages the official AWS VPC module by [terraform-aws-modules](https://github.com/terraform-aws-modules/terraform-aws-vpc), adding customizable subnet naming conventions and flexible tagging.
 

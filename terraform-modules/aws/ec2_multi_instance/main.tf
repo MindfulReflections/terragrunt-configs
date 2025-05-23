@@ -1,14 +1,11 @@
 data "aws_ami" "amazon_linux_23" {
   most_recent = true
   owners      = ["amazon"]
-
   filter {
     name   = "name"
     values = ["al2023-ami-*-x86_64"]
   }
 }
-
-
 
 module "ec2_multi_instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
@@ -34,7 +31,6 @@ module "ec2_multi_instance" {
       )
     )
   )
-
 
 
   associate_public_ip_address = lookup(each.value, "associate_public_ip_address", (var.associate_public_ip_address || lookup(each.value, "create_eip", false)))
