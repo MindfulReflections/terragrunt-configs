@@ -1,6 +1,52 @@
 # Mindful Reflections: Terraform + Terragrunt Infrastructure
 
 
+## 🚀 Getting Started
+
+Before deploying, ensure your AWS account structure and IAM roles follow the trust-based architecture below:
+
+![AWS Role Assumption Architecture](./docs/terraform-role-architecture.png)
+
+> 📌 **This diagram illustrates the prerequisite setup required before running Terragrunt deployments.**
+
+### Prerequisites for this architecture:
+
+- **Root Account**
+  - Hosts the S3 + DynamoDB backend for Terraform state and locking.
+  - Contains the IAM role `TerraformStateAccess`, which allows child accounts to write backend state.
+  - Contains the initial **Terraform Session** (executed locally or via CI/CD), which assumes roles in child accounts.
+
+- **Child Accounts (`dev`, `prod`)**
+  - Each has its own `TerraformExecutionRole` IAM role with permission to manage infrastructure.
+  - Trusts the **root account**, allowing Terraform to `assume-role` into the environment.
+  - Each execution role is also allowed to assume the `TerraformStateAccess` role back in the root account (reverse assume-role) to write backend state.
+
+> ⚠️ You must configure these IAM roles and trust policies before using this infrastructure setup.
+
+---
+
+1. Clone the repo and set up your AWS Organization with dev/prod accounts.
+2. Export credentials for the root account (backend hosting).
+3. Deploy VPC layer:
+   ```bash
+   cd prod/aws/networking/vpc
+   terragrunt apply
+Deploy security groups and EC2:
+
+bash
+Copy
+Edit
+cd prod/aws/networking/security-groups-base
+terragrunt apply
+
+cd prod/aws/computing/01-prefect
+terragrunt apply
+
+
+
+
+
+
 This repository contains modular, production-ready infrastructure code built with **Terraform** and **Terragrunt** for provisioning AWS-based environments.
 
 The goal is to provide a clean and scalable baseline setup for multi-account AWS organizations using best practices — including:

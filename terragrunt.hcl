@@ -1,6 +1,7 @@
 locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
   terraform_state_path = "${path_relative_to_include()}/terraform.tfstate"
+  private = read_terragrunt_config(find_in_parent_folders("private.hcl")).locals
 }
 
 inputs = {
@@ -26,7 +27,8 @@ remote_state {
     # Assume back to the root AWS account to store the Terraform state
     # Because the Terraform state bucket is in the root account
     assume_role = try(
-      { role_arn = "arn:aws:iam::866235217451:role/TerraformStateAccess" },
+      # { role_arn = "arn:aws:iam::866235217451:role/TerraformStateAccess" },
+      { role_arn =  local.private.terraform_state_access_role_arn },
       null
     )
   }

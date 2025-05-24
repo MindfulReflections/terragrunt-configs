@@ -36,3 +36,6 @@ Thumbs.db
 *.zip
 *.bak
 *.tmp
+
+# Never commit this file to public repos
+**/private.hcl
