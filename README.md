@@ -21,10 +21,26 @@ Before deploying, ensure your AWS account structure and IAM roles follow the tru
   - Trusts the **root account**, allowing Terraform to `assume-role` into the environment.
   - Each execution role is also allowed to assume the `TerraformStateAccess` role back in the root account (reverse assume-role) to write backend state.
 
+- All sensitive values, such as `terraform_execution_role_arn` and `terraform_state_access_role_arn`, are stored in:
+  ```
+  terragrunt-configs/common_vars/private.hcl
+  ```
+
+- This file is **excluded from version control** (e.g. via `.gitignore`).
+- To help you create your own version, the repository includes a template file:
+  ```
+  terragrunt-configs/common_vars/private.example.hcl
+  ```
+
+- Each environment’s `env.hcl` explicitly loads this file via:
+  ```hcl
+  private = read_terragrunt_config("${dirname(find_in_parent_folders("root.hcl"))}/common_vars/private.hcl").locals
+  ```
+
 > ⚠️ You must configure these IAM roles and trust policies before using this infrastructure setup.
 
 ---
-
+### Next steps:
 1. Clone the repo and set up your AWS Organization with dev/prod accounts.
 2. Export credentials for the root account (backend hosting).
 3. Deploy VPC layer:
@@ -41,9 +57,6 @@ terragrunt apply
 
 cd prod/aws/computing/01-prefect
 terragrunt apply
-
-
-
 
 
 

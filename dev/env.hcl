@@ -4,14 +4,14 @@ locals {
 
   # Tags including the Terraform state file path passed in from root inputs
   tags = {
-    Environment       = "dev"
+    Environment = "dev"
   }
 
-  private = read_terragrunt_config(find_in_parent_folders("private.hcl")).locals
+  private = read_terragrunt_config("${dirname(find_in_parent_folders("root.hcl"))}/common_vars/private.hcl").locals
 
-  # THIS IS AN ARN of the IAM role in the target AWS account (!!PROD!!)
+  # THIS IS AN ARN of the IAM role in the target AWS account (DEV)
   # that Terraform assumes to deploy and manage cloud resources.
   # This role must have the necessary permissions for Terraform operations.
-  # terraform_execution_role_arn = "arn:aws:iam::163363909847:role/TerraformExecutionRole"
-  terraform_execution_role_arn = local.private.terraform_execution_role_arn
+
+  terraform_execution_role_arn = local.private.dev_terraform_execution_role_arn
 }

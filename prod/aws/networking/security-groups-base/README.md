@@ -1,29 +1,50 @@
-# Include root configuration with remote state and global settings
+# Terragrunt Usage for `aws/batch-security-groups` Terraform Module
+
+This document describes how to use the `terraform-modules/aws/batch-security-groups` module with Terragrunt. It provides configuration examples for setting up reusable security groups within an existing VPC. The module is designed for production-grade environments, supporting internal access control, SSH ingress, and public web traffic exposure.
+
+## Structure Overview
+
+The security groups configuration should follow the same Terragrunt project layout, promoting separation of environments and consistency across modules:
+
+```
+terragrunt-configs/
+├── common_vars/
+│   └── general.hcl
+├── prod/
+│   └── aws/
+│       └── networking/
+│           ├── vpc/
+│           │   └── terragrunt.hcl
+│           └── security-groups-base/
+│               └── terragrunt.hcl
+```
+
+---
+
+## Example: Base security groups for production VPC
+
+```hcl
+terraform {
+  source = "../../../../terraform-modules/aws/batch-security-groups"
+}
+
 include "root" {
   path = find_in_parent_folders("root.hcl")
 }
 
-# Include shared environment-level variables and common tags
 include "general" {
   path   = "${dirname(find_in_parent_folders("root.hcl"))}/common_vars/general.hcl"
   expose = true
 }
 
-# Declare dependency on VPC module to obtain VPC ID
 dependency "vpc" {
   config_path = "../vpc"
 
   mock_outputs = {
-    vpc_id = "mock-vpc-output"
+    vpc_id = "vpc-123456"
   }
 }
 
-# Define the source of the Terraform module
-terraform {
-  source = "../../../../terraform-modules/aws/batch-security-groups"
-}
-
-# Local values for environment variables and merged tagging strategy
 locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
 
@@ -36,7 +57,6 @@ locals {
   )
 }
 
-# Module input variables for batch-security-groups
 inputs = {
   vpc_id = dependency.vpc.outputs.vpc_id
   tags   = local.tags
@@ -105,3 +125,18 @@ inputs = {
     }
   }
 }
+```
+
+---
+
+## Notes
+
+- All security group names and descriptions should follow internal naming conventions.
+- SSH ingress should always be restricted to known admin or VPN CIDRs.
+- The `web` group intentionally allows public access. Ensure that only necessary services are exposed.
+- Use the `internal` group for internal-only traffic (e.g., between ECS services or databases).
+- Tagging is centralized using `general.hcl` and `env.hcl`, ensuring consistency across modules.
+
+## Author
+
+Developed and maintained by **Aliaksei Shybeka** for **MindfulReflections Project**.

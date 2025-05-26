@@ -1,9 +1,9 @@
 include "root" {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("root.hcl")
 }
 
 include "general" {
-  path   = "${dirname(find_in_parent_folders())}/common_vars/general.hcl"
+  path   = "${dirname(find_in_parent_folders("root.hcl"))}/common_vars/general.hcl"
   expose = true
 }
 
@@ -41,7 +41,7 @@ inputs = {
 
   tags = local.tags
 
-  name = local.environment_vars.env
+  name                  = local.environment_vars.env
   public_subnet_suffix  = "public"
   private_subnet_suffix = "private"
 }

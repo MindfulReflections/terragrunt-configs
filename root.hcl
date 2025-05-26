@@ -1,7 +1,8 @@
 locals {
-  environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
+  environment_vars     = read_terragrunt_config(find_in_parent_folders("env.hcl")).locals
   terraform_state_path = "${path_relative_to_include()}/terraform.tfstate"
-  private = read_terragrunt_config(find_in_parent_folders("private.hcl")).locals
+  private              = read_terragrunt_config("${dirname(find_in_parent_folders("root.hcl"))}/common_vars/private.hcl").locals
+
 }
 
 inputs = {
@@ -20,15 +21,15 @@ remote_state {
     dynamodb_table              = "mindfulreflections-terraform-locks"
     region                      = local.environment_vars.aws_region
     encrypt                     = true
-    key                         = local.terraform_state_path #"${path_relative_to_include()}/terraform.tfstate"
+    key                         = local.terraform_state_path
     skip_region_validation      = true
     skip_credentials_validation = true
 
     # Assume back to the root AWS account to store the Terraform state
     # Because the Terraform state bucket is in the root account
     assume_role = try(
-      # { role_arn = "arn:aws:iam::866235217451:role/TerraformStateAccess" },
-      { role_arn =  local.private.terraform_state_access_role_arn },
+
+      { role_arn = local.private.terraform_state_access_role_arn },
       null
     )
   }
