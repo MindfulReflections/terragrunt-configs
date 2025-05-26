@@ -49,15 +49,14 @@ Before deploying, ensure your AWS account structure and IAM roles follow the tru
    terragrunt apply
 Deploy security groups and EC2:
 
-bash
-Copy
-Edit
+
+```
 cd prod/aws/networking/security-groups-base
 terragrunt apply
 
 cd prod/aws/computing/01-prefect
 terragrunt apply
-
+```
 
 
 This repository contains modular, production-ready infrastructure code built with **Terraform** and **Terragrunt** for provisioning AWS-based environments.
